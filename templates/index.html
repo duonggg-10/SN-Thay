@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trang sinh nhật đặc biệt dành tặng thầy Điệp - Lớp 10A6 Nhà Sò">
+    <title>Nhà Sò 10A6 - Chúc Mừng Sinh Nhật Thầy Điệp</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <!-- ================================ -->
+    <!-- INTRO SCREEN - Màn hình chờ -->
+    <!-- ================================ -->
+    <div id="intro-screen">
+        <!-- Animated Bubbles Background -->
+        <div class="bubbles-container" id="bubble-container"></div>
+        
+        <!-- Animated Waves -->
+        <div class="ocean-waves">
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+        </div>
+
+        <!-- Giant Clam with Pearl -->
+        <div class="giant-clam-container" id="clam-container">
+            <div class="clam-glow"></div>
+            <div class="clam-shell clam-shell-top"></div>
+            <div class="pearl-input-wrapper">
+                <div class="pearl-glow"></div>
+                <p class="label-pass">🐚 NHẬP MẬT MÃ 🐚</p>
+                <input type="password" id="password-input" placeholder="Sĩ số lớp?" autocomplete="off" maxlength="2">
+                <button id="submit-btn">
+                    <span>MỞ QUÀ</span>
+                    <div class="button-shine"></div>
+                </button>
+                <p class="hint-text">Gợi ý: Có bao nhiêu con Sò? 🤔</p>
+            </div>
+            <div class="clam-shell clam-shell-bottom"></div>
+        </div>
+
+        <!-- Intro Text -->
+        <div class="intro-text">
+            <h1 class="glowing-text">🌊 Nhà Sò 10A6 Xin Chào! 🌊</h1>
+            <p class="subtitle-intro">Bấm vào con Sò để mở cánh cửa kỷ niệm...</p>
+            <div class="floating-icons">
+                <span>🎂</span>
+                <span>🎉</span>
+                <span>🎁</span>
+                <span>🎈</span>
+            </div>
+        </div>
+
+        <!-- Loading Animation -->
+        <div class="loading-animation" id="loading-animation">
+            <div class="loading-spinner"></div>
+            <p>Đang mở quà tặng...</p>
+        </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- MAIN CONTENT - Nội dung chính -->
+    <!-- ================================ -->
+    <main id="main-content" class="hidden">
+        
+        <!-- Floating Music Control -->
+        <div class="music-control" id="music-control">
+            <button id="music-toggle" class="music-btn">
+                <span class="music-icon">🎵</span>
+                <span class="music-text">Music ON</span>
+            </button>
+        </div>
+
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="header-decoration">
+                <div class="balloon balloon-1">🎈</div>
+                <div class="balloon balloon-2">🎈</div>
+                <div class="balloon balloon-3">🎈</div>
+            </div>
+            
+            <div class="teacher-box">
+                <div class="avatar-frame">
+                    <img src="{{ url_for('static', filename='img/teacher_avatar.jpg') }}" alt="Thầy Điệp" class="teacher-avatar">
+                    <div class="avatar-ring"></div>
+                </div>
+            </div>
+            
+            <h1 class="title-text">
+                <span class="title-word">Happy</span>
+                <span class="title-word">Birthday</span>
+                <span class="title-word">Thầy</span>
+                <span class="title-word">Điệp!</span>
+            </h1>
+            
+            <p class="subtitle">🚢 Captain của đại gia đình Nhà Sò 10A6 🐚</p>
+            
+            <div class="sparkles">
+                <span class="sparkle">✨</span>
+                <span class="sparkle">✨</span>
+                <span class="sparkle">✨</span>
+            </div>
+        </header>
+
+        <!-- Birthday Cake Animation -->
+        <section class="card cake-section">
+            <div class="birthday-cake">
+                <div class="cake-layer cake-layer-1"></div>
+                <div class="cake-layer cake-layer-2"></div>
+                <div class="cake-layer cake-layer-3"></div>
+                <div class="candle">
+                    <div class="flame"></div>
+                </div>
+                <div class="cake-text">🎂</div>
+            </div>
+            <button class="blow-candle-btn" id="blow-candle-btn">
+                🌬️ Thổi nến đi thầy!
+            </button>
+        </section>
+
+        <!-- Time Counter & Patience Bar -->
+        <section class="card counter-card">
+            <div class="counter-box">
+                <h2 class="section-title">
+                    <span class="title-icon">⏰</span>
+                    Sổ Biển Kể Chuyện
+                    <span class="title-icon">📖</span>
+                </h2>
+                <p class="counter-intro">Thầy đã đồng hành cùng Nhà Sò được:</p>
+                
+                <div id="time-counter">
+                    <div class="time-unit">
+                        <span class="time-value" id="days">0</span>
+                        <span class="time-label">Ngày</span>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-unit">
+                        <span class="time-value" id="hours">0</span>
+                        <span class="time-label">Giờ</span>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-unit">
+                        <span class="time-value" id="minutes">0</span>
+                        <span class="time-label">Phút</span>
+                    </div>
+                    <div class="time-separator">:</div>
+                    <div class="time-unit">
+                        <span class="time-value" id="seconds">0</span>
+                        <span class="time-label">Giây</span>
+                    </div>
+                </div>
+                
+                <div class="patience-container">
+                    <p class="patience-title">
+                        <span>😤</span>
+                        Độ kiên nhẫn của thầy với 10A6:
+                        <span>💪</span>
+                    </p>
+                    <div class="patience-track">
+                        <div id="patience-bar">
+                            <span class="patience-percent"></span>
+                        </div>
+                    </div>
+                    <p class="patience-status" id="patience-status">Đang tải...</p>
+                </div>
+
+                <!-- Fun Stats -->
+                <div class="fun-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">47</span>
+                        <span class="stat-label">Con Sò</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" >n*</span>
+                        <span class="stat-label">Kỷ Niệm</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">∞</span>
+                        <span class="stat-label">Tình Thầy Trò</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Wall (Photos) -->
+        <section class="card photo-section">
+            <h2 class="section-title">
+                <span class="title-icon">📸</span>
+                Bức Tường Kỷ Niệm 10A6
+                <span class="title-icon">💝</span>
+            </h2>
+            <p class="section-subtitle">Những khoảnh khắc đẹp nhất của chúng ta</p>
+            
+            <div class="photo-wall">
+                {% if class_photos %}
+                    {% for photo in class_photos %}
+                    <div class="polaroid" data-index="{{ loop.index }}">
+                        <img src="{{ url_for('static', filename='img/' + photo) }}" alt="Memory {{ loop.index }}" loading="lazy">
+                        <div class="caption">Memory #{{ loop.index }}</div>
+                        <div class="polaroid-tape"></div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-photos">
+                        <p>📷 Chưa có ảnh nào. Hãy thêm ảnh vào thư mục <code>static/img/</code></p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Birthday Wishes from Students -->
+        <section class="card wishes-section">
+            <h2 class="section-title">
+                <span class="title-icon">💌</span>
+                Lời chúc từ 47 "Con Sò"
+                <span class="title-icon">🐚</span>
+            </h2>
+            <p class="section-subtitle">Nhấn vào từng con sò để xem lời chúc nhé!</p>
+            
+            <div class="wishes-grid">
+                {% for student in students %}
+                <div class="shell" data-name="{{ student.name }}" data-msg="{{ student.msg }}" data-index="{{ loop.index }}">
+                    <div class="shell-glow"></div>
+                    <div class="shell-top"></div>
+                    <div class="shell-bottom"></div>
+                    <div class="pearl">
+                        <span class="pearl-number">{{ loop.index }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Interactive Quiz/Game Section -->
+        <section class="card quiz-section">
+            <h2 class="section-title">
+                <span class="title-icon">🎮</span>
+                Thử Thách Cùng Thầy
+                <span class="title-icon">🏆</span>
+            </h2>
+            <div class="quiz-container">
+                <p class="quiz-question">Thầy có nhớ tên tất cả 47 con sò không? 😁</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" data-answer="yes">Tất nhiên rồi! 💯</button>
+                    <button class="quiz-btn" data-answer="no">Để thầy xem lại... 🤔</button>
+                    <button class="quiz-btn" data-answer="maybe">Nhớ hết... tên họ! 😅</button>
+                </div>
+                <div class="quiz-result hidden" id="quiz-result"></div>
+            </div>
+        </section>
+
+        <!-- Promise Section -->
+        <section class="card promise-section">
+            <h2 class="section-title">
+                <span class="title-icon">🤝</span>
+                Lời Hứa 2026
+                <span class="title-icon">💖</span>
+            </h2>
+            <p class="promise-question">Thầy hứa sẽ dắt tụi em đi hết cấp 3 nha thầy? 🥺</p>
+            
+            <div class="promise-buttons">
+                <button id="yes-btn" class="promise-btn promise-yes">
+                    <span>✅ Chốt luôn!</span>
+                </button>
+                <button id="no-btn" class="promise-btn promise-no">
+                    <span>🤔 Để thầy suy nghĩ...</span>
+                </button>
+            </div>
+            
+            <div class="promise-result hidden" id="promise-result">
+                <p></p>
+            </div>
+        </section>
+
+        <!-- Special Message Section -->
+        <section class="card message-section">
+            <h2 class="section-title">
+                <span class="title-icon">💝</span>
+                Thông Điệp Đặc Biệt
+                <span class="title-icon">💝</span>
+            </h2>
+            <div class="special-message">
+                <p class="message-text">
+                    Kính gửi thầy Điệp thân yêu,<br><br>
+                    
+                    Trong hành trình đầu cấp 3 gian nan, có một người thầy luôn kiên nhẫn, tận tâm và đồng hành cùng chúng em - đó chính là thầy. 
+                    Thầy không chỉ là người truyền đạt kiến thức, mà còn là người bạn, là người thuyền trưởng dẫn dắt con thuyền Nhà Sò 10A6 vượt qua mọi sóng gió.<br><br>
+                    
+                    Ngày hôm nay, nhân dịp sinh nhật của thầy, 47 con sò chúng em xin gửi đến thầy những lời chúc tốt đẹp nhất. 
+                    Chúc thầy luôn mạnh khỏe, hạnh phúc, và tiếp tục là ngọn hải đăng soi sáng con đường tri thức cho biết bao thế hệ học trò.<br><br>
+                    
+                    Cảm ơn thầy vì tất cả! ❤️<br><br>
+                    
+                    <strong>- Lớp 10A6, THPT Nguyễn Khuyến, BRVT -</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <p class="footer-text">💻 Coded with ❤️ by Team Nhà Sò</p>
+                <p class="footer-copyright">© 2026 - THPT Nguyễn Khuyến BRVT</p>
+                <div class="footer-social">
+                    <span>🌟</span>
+                    <span>Happy Birthday Thầy Điệp</span>
+                    <span>🌟</span>
+                </div>
+            </div>
+            
+            <button class="scroll-top" id="scroll-top">
+                <span>⬆️</span>
+            </button>
+        </footer>
+    </main>
+
+    <!-- ================================ -->
+    <!-- MODALS & OVERLAYS -->
+    <!-- ================================ -->
+    
+    <!-- Lightbox for Photos -->
+    <div id="lightbox" class="hidden">
+        <div class="lightbox-content">
+            <button class="close-btn" id="close-lightbox">
+                <span>✕</span>
+            </button>
+            <button class="nav-btn prev-btn" id="prev-photo">‹</button>
+            <button class="nav-btn next-btn" id="next-photo">›</button>
+            <img id="lightbox-img" src="" alt="Photo">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Wish Modal -->
+    <div id="wish-modal" class="hidden">
+        <div class="modal-content wish-modal-content">
+            <button class="close-btn" id="close-modal">
+                <span>✕</span>
+            </button>
+            <div class="modal-header">
+                <div class="student-avatar">👤</div>
+                <h3 id="modal-name"></h3>
+            </div>
+            <div class="modal-body">
+                <div class="message-bubble">
+                    <p id="modal-msg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Music Player -->
+    <audio id="bg-music" loop></audio>
+
+    <!-- Pass music playlist to JavaScript -->
+    <script>
+        const musicPlaylistFromServer = {{ music_playlist | tojson }};
+        const totalPhotos = {{ class_photos|length }};
+    </script>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
